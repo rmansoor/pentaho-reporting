@@ -26,6 +26,7 @@
       </activation>
       <modules>
         <module>prd-ce</module>
+        <module>prd-ce-no-osgi</module>
         <module>sample-war</module>
         <module>samples</module>
         <module>sdk</module>
