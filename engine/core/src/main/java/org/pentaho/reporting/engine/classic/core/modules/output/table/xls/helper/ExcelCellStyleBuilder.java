@@ -17,6 +17,8 @@
 
 package org.pentaho.reporting.engine.classic.core.modules.output.table.xls.helper;
 
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.IndexedColorMap;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,6 +35,9 @@ import org.pentaho.reporting.engine.classic.core.style.TextStyleKeys;
  * Created by dima.prokopenko@gmail.com on 9/13/2016.
  */
 public class ExcelCellStyleBuilder {
+  /** POI 5 dropped XSSFColor(java.awt.Color); this constructor exists since POI 4.0. */
+  private static final IndexedColorMap COLOR_MAP = new DefaultIndexedColorMap();
+
 
   private final Workbook workbook;
   private final CellStyle hssfCellStyle;
@@ -119,22 +124,22 @@ public class ExcelCellStyleBuilder {
     final XSSFCellStyle xssfCellStyle = (XSSFCellStyle) hssfCellStyle;
     if ( BorderStyle.NONE.equals( bg.getBottom().getBorderStyle() ) == false ) {
       hssfCellStyle.setBorderBottom( styleKey.getBorderStrokeBottom() );
-      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.BOTTOM, new XSSFColor( styleKey.getExtendedColorBottom() ) );
+      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.BOTTOM, new XSSFColor( styleKey.getExtendedColorBottom(), COLOR_MAP ) );
     }
     if ( BorderStyle.NONE.equals( bg.getTop().getBorderStyle() ) == false ) {
       hssfCellStyle.setBorderTop( styleKey.getBorderStrokeTop() );
-      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.TOP, new XSSFColor( styleKey.getExtendedColorTop() ) );
+      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.TOP, new XSSFColor( styleKey.getExtendedColorTop(), COLOR_MAP ) );
     }
     if ( BorderStyle.NONE.equals( bg.getLeft().getBorderStyle() ) == false ) {
       hssfCellStyle.setBorderLeft( styleKey.getBorderStrokeLeft() );
-      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.LEFT, new XSSFColor( styleKey.getExtendedColorLeft() ) );
+      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.LEFT, new XSSFColor( styleKey.getExtendedColorLeft(), COLOR_MAP ) );
     }
     if ( BorderStyle.NONE.equals( bg.getRight().getBorderStyle() ) == false ) {
       hssfCellStyle.setBorderRight( styleKey.getBorderStrokeRight() );
-      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.RIGHT, new XSSFColor( styleKey.getExtendedColorRight() ) );
+      xssfCellStyle.setBorderColor( XSSFCellBorder.BorderSide.RIGHT, new XSSFColor( styleKey.getExtendedColorRight(), COLOR_MAP ) );
     }
     if ( bg.getBackgroundColor() != null ) {
-      xssfCellStyle.setFillForegroundColor( new XSSFColor( styleKey.getExtendedColor() ) );
+      xssfCellStyle.setFillForegroundColor( new XSSFColor( styleKey.getExtendedColor(), COLOR_MAP ) );
       hssfCellStyle.setFillPattern( FillPatternType.SOLID_FOREGROUND );
     }
   }
