@@ -10,7 +10,7 @@
   <artifactId>classic-core</artifactId>
   <!-- own release version: built locally against POI 5 for pentaho-kettle 9.4 (Java 21 / CVE work);
        a release version is never replaced by a remote 9.4.0.0-SNAPSHOT -->
-  <version>9.4.0.0-jdk21-1</version>
+  <version>9.4.0.0-jdk21-2</version>
   <properties>
     <reporting.version>9.4.0.0-SNAPSHOT</reporting.version>
     <powermock.version>1.6.3</powermock.version>
@@ -36,6 +36,12 @@
     <dependency>
       <groupId>org.pentaho.reporting.library</groupId>
       <artifactId>libfonts</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.lowagie</groupId>
+          <artifactId>itext</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.pentaho.reporting.library</groupId>
@@ -167,10 +173,23 @@
       <artifactId>asm</artifactId>
       <scope>compile</scope>
     </dependency>
+    <!-- OpenPDF (maintained LGPL/MPL fork, same com.lowagie packages) instead of iText 2.1.7, which has
+         CVE-2017-9096 and no free fixed release -->
     <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext-rtf</artifactId>
-      <scope>compile</scope>
+      <groupId>com.github.librepdf</groupId>
+      <artifactId>openpdf</artifactId>
+      <version>1.4.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.librepdf</groupId>
+      <artifactId>openrtf</artifactId>
+      <version>1.2.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.github.librepdf</groupId>
+          <artifactId>openpdf</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>bouncycastle</groupId>

@@ -48,6 +48,8 @@ import org.pentaho.reporting.engine.classic.core.util.geom.StrictGeomUtility;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -254,23 +256,23 @@ public class RTFPrinter {
   private void computeCellStyle( final RenderBox content, final Cell cell ) {
     final ElementAlignment verticalAlign = content.getNodeLayoutProperties().getVerticalAlignment();
     if ( ElementAlignment.BOTTOM.equals( verticalAlign ) ) {
-      cell.setVerticalAlignment( Element.ALIGN_BOTTOM );
+      cell.setVerticalAlignment( VerticalAlignment.BOTTOM );
     } else if ( ElementAlignment.MIDDLE.equals( verticalAlign ) ) {
-      cell.setVerticalAlignment( Element.ALIGN_MIDDLE );
+      cell.setVerticalAlignment( VerticalAlignment.CENTER );
     } else {
-      cell.setVerticalAlignment( Element.ALIGN_TOP );
+      cell.setVerticalAlignment( VerticalAlignment.TOP );
     }
 
     final ElementAlignment textAlign =
         (ElementAlignment) content.getStyleSheet().getStyleProperty( ElementStyleKeys.ALIGNMENT );
     if ( ElementAlignment.RIGHT.equals( textAlign ) ) {
-      cell.setHorizontalAlignment( Element.ALIGN_RIGHT );
+      cell.setHorizontalAlignment( HorizontalAlignment.RIGHT );
     } else if ( ElementAlignment.JUSTIFY.equals( textAlign ) ) {
-      cell.setHorizontalAlignment( Element.ALIGN_JUSTIFIED );
+      cell.setHorizontalAlignment( HorizontalAlignment.JUSTIFIED );
     } else if ( ElementAlignment.CENTER.equals( textAlign ) ) {
-      cell.setHorizontalAlignment( Element.ALIGN_CENTER );
+      cell.setHorizontalAlignment( HorizontalAlignment.CENTER );
     } else {
-      cell.setHorizontalAlignment( Element.ALIGN_LEFT );
+      cell.setHorizontalAlignment( HorizontalAlignment.LEFT );
     }
   }
 
