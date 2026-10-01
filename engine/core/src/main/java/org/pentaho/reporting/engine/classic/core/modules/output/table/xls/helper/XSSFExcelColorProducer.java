@@ -19,14 +19,19 @@ package org.pentaho.reporting.engine.classic.core.modules.output.table.xls.helpe
 
 import java.awt.Color;
 
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.IndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
 public class XSSFExcelColorProducer implements ExcelColorProducer {
+  /** POI 5 dropped XSSFColor(java.awt.Color); this constructor exists since POI 4.0. */
+  private static final IndexedColorMap COLOR_MAP = new DefaultIndexedColorMap();
+
   public XSSFExcelColorProducer() {
   }
 
   public short getNearestColor( final Color awtColor ) {
-    XSSFColor color = new XSSFColor( awtColor );
+    XSSFColor color = new XSSFColor( awtColor, COLOR_MAP );
     return color.getIndexed();
   }
 }

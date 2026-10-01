@@ -61,9 +61,9 @@ public class ExcelFontFactory {
     // read the fonts from the workbook ...
     // Funny one: Please note that the layout will be broken if the first
     // font is not 'Arial 10'.
-    final short numberOfFonts = this.workbook.getNumberOfFonts();
+    final int numberOfFonts = this.workbook.getNumberOfFonts();
     for ( int i = 0; i < numberOfFonts; i++ ) {
-      final Font font = workbook.getFontAt( (short) i );
+      final Font font = workbook.getFontAt( i );
       this.fonts.put( new HSSFFontWrapper( font ), font );
     }
 
