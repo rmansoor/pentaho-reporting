@@ -17,13 +17,12 @@
 
 package org.pentaho.reporting.engine.classic.bugs;
 
-import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PRTokeniser;
+import com.lowagie.text.pdf.PdfContentParser;
 import com.lowagie.text.pdf.PdfLiteral;
-import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.parser.Matrix;
 import com.lowagie.text.pdf.parser.PdfContentReaderTool;
-import com.lowagie.text.pdf.parser.PdfContentStreamProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
@@ -80,12 +79,7 @@ public class Prd5873Test {
 
         printPdfPage(reader);
 
-        final PdfDictionary pageN = reader.getPageN(1);
-        final PdfDictionary asDict = pageN.getAsDict(PdfName.RESOURCES);
-        final byte[] pageContent = reader.getPageContent(1);
-        PdfValidator pv = new PdfValidator();
-        pv.processContent(pageContent, asDict);
-
+        validate(reader.getPageContent(1));
     }
 
     private void printPdfPage(PdfReader reader) throws IOException {
@@ -95,49 +89,34 @@ public class Prd5873Test {
     }
 
 
-    class PdfValidator extends PdfContentStreamProcessor {
-        Stack graphicsState;
-        boolean textModeActive;
-
-        PdfValidator() {
-            graphicsState = new Stack();
-        }
-
-        @Override
-        public void processContent(byte[] bytes, PdfDictionary pdfDictionary) {
-            graphicsState.clear();
-            super.processContent(bytes, pdfDictionary);
-            if (!graphicsState.isEmpty()) {
-                throw new RuntimeException();
-            }
-        }
-
-        @Override
-        public void displayText(String s, Matrix matrix) {
-
-        }
-
-        @Override
-        public void invokeOperator(PdfLiteral pdfLiteral, ArrayList arrayList) {
-            super.invokeOperator(pdfLiteral, arrayList);
-            String op = pdfLiteral.toString();
-            if (Objects.equals(op, "q")) {
+    /**
+     * The page content must not start or end a graphics state (q/Q) inside a text object (BT/ET), and every q
+     * needs its Q. (OpenPDF has no PdfContentStreamProcessor, so the operators are read with PdfContentParser.)
+     */
+    private void validate(byte[] pageContent) throws IOException {
+        final Stack<Boolean> graphicsState = new Stack<>();
+        boolean textModeActive = false;
+        final PdfContentParser parser = new PdfContentParser(new PRTokeniser(pageContent));
+        final ArrayList<PdfObject> operands = new ArrayList<>();
+        while (parser.parse(operands).size() > 0) {
+            final String op = ((PdfLiteral) operands.get(operands.size() - 1)).toString();
+            if (Objects.equals(op, "q") || Objects.equals(op, "Q")) {
                 if (textModeActive) {
                     throw new RuntimeException("Cannot mix text mode and graphics operations.");
                 }
-
-                graphicsState.push(Boolean.TRUE);
-            } else if (Objects.equals(op, "Q")) {
-                if (textModeActive) {
-                    throw new RuntimeException("Cannot mix text mode and graphics operations.");
+                if (op.equals("q")) {
+                    graphicsState.push(Boolean.TRUE);
+                } else {
+                    graphicsState.pop();
                 }
-
-                graphicsState.pop();
             } else if (Objects.equals(op, "BT")) {
                 textModeActive = true;
             } else if (Objects.equals(op, "ET")) {
                 textModeActive = false;
             }
+        }
+        if (!graphicsState.isEmpty()) {
+            throw new RuntimeException("Unbalanced graphics state (q without Q).");
         }
     }
 }
