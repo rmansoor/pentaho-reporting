@@ -17,7 +17,7 @@
 
 package org.pentaho.reporting.designer.core.util;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 import org.pentaho.openformula.ui.FieldDefinition;
 import org.pentaho.openformula.ui.FormulaEditorDialog;
 import org.pentaho.reporting.designer.core.ReportDesignerContext;
@@ -306,7 +306,7 @@ public class FormulaEditorPanel extends JPanel {
           continue;
         }
         fields.add( new DataSchemaFieldDefinition( columnName, attributes, dataAttributeContext ) );
-        if ( ObjectUtils.equals( parameter, columnName ) ) {
+        if ( Objects.equals( parameter, columnName ) ) {
           break;
         }
       }

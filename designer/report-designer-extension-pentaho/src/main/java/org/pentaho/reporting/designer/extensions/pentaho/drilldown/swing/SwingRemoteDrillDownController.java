@@ -17,7 +17,7 @@
 
 package org.pentaho.reporting.designer.extensions.pentaho.drilldown.swing;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 import org.pentaho.reporting.designer.core.ReportDesignerContext;
 import org.pentaho.reporting.designer.core.auth.AuthenticationData;
 import org.pentaho.reporting.designer.core.auth.AuthenticationStore;
@@ -316,14 +316,14 @@ public class SwingRemoteDrillDownController {
       String serverUrl = loginData == null ? "" : loginData.getUrl();
       JTextField serverUrlField = drillDownUi.<JTextField>getComponent(
           SwingRemoteDrillDownUi.ComponentLookup.SERVER_URL_FIELD );
-      if ( !ObjectUtils.equals( serverUrlField.getText(), serverUrl ) ) {
+      if ( !Objects.equals( serverUrlField.getText(), serverUrl ) ) {
         serverUrlField.setText( serverUrl );
       }
 
       String path = pentahoPathWrapper.getLocalPath();
       JTextField pathField = drillDownUi.<JTextField>getComponent(
           SwingRemoteDrillDownUi.ComponentLookup.PATH_FIELD );
-      if ( !ObjectUtils.equals( pathField.getText(), path ) ) {
+      if ( !Objects.equals( pathField.getText(), path ) ) {
         pathField.setText( path );
       }
     }
